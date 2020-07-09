@@ -1,0 +1,76 @@
+---
+title: "Penguins Analysis"
+author: "Amanda West (@amawest)"
+date: "7/9/2020"
+output: html_document
+---
+
+```{r, echo=F}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 1. Import Data 
+Data from Kaggle:
+- https://www.kaggle.com/parulpandey/palmer-archipelago-antarctica-penguin-data
+<br>
+Analysis Helpers:
+<br>
+- Python: https://www.kaggle.com/parulpandey/penguin-dataset-the-new-iris/notebook
+<br>
+- Python: https://www.kaggle.com/amandawest/penguin-dataset-the-new-iris/edit
+<br>
+-  R: https://github.com/allisonhorst/palmerpenguins
+<br>
+
+```{r, message=F, error=F, warning=FALSE}
+rm(list=ls())
+setwd("~/Desktop/r_notes")                 # best & simplest. 
+penguins <- read.csv(header=TRUE, file = "penguins_size.csv")
+penguins_no_nas <- na.omit(penguins) # remove missing values from data frame
+
+# relevant libraries
+library(dplyr)  # so we can use the pipe operator in part 2
+library(plotly) # data visualization in part 3
+```
+
+### 2. Exploratory Analysis 
+
+```{r, message=F, error=F, warning=FALSE}
+penguins %>% 
+  group_by(species) %>% 
+  summarize(across(where(is.numeric), mean, na.rm = TRUE))
+```
+
+And this is the correlation plot, which will provide some insight
+into how our scatter plots will end up looking: 
+
+```{r, message=F, error=F, warning=FALSE}
+penguins_cor <- na.omit(penguins[, c(3,5,6)])
+res <- cor(penguins_cor)
+round(res, 2)
+```
+
+### 3. Data Visualization
+
+```{r, message=F, error=F, warning=FALSE}
+plot_ly(penguins, 
+        x = ~flipper_length_mm,
+        y = ~body_mass_g, 
+        color = ~flipper_length_mm, 
+        size = ~flipper_length_mm) %>%
+  layout(xaxis = list(title = "Flipper Length (mm)"),
+         yaxis = list (title = "Body Mass (g)"))
+```
+
+```{r, message=F, error=F, warning=FALSE}
+plot_ly(penguins, 
+        x = ~flipper_length_mm,
+        y = ~body_mass_g, 
+        color = ~species, 
+        size = ~flipper_length_mm) %>%
+  layout(xaxis = list(title = "Flipper Length (mm)"),
+         yaxis = list (title = "Body Mass (g)"))
+```
+
+<br>
+<i>Finis!</i>
